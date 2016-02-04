@@ -24,9 +24,10 @@
 	<real>1441882165.731977</real>
 	<key>version</key>
 	<string>1.0</string>
+	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
 		<key>repository</key>
-		<string>typemytype/profileRoboFontExtension</string>
+		<string>typemytype/projectRoboFontExtension</string>
 		<key>summary</key>
 		<string>A RoboFont extension that keeps track of a project.</string>
 	</dict>
