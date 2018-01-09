@@ -110,7 +110,7 @@ def OpenRoboFontProject(path):
             ScriptRunner(text=project["execute"])
         except:
             import traceback
-            print traceback.format_exc(5)
+            print(traceback.format_exc(5))
 
 
 class SaveRoboFontProject(object):
@@ -213,7 +213,7 @@ class ReadRoboFontProjectFile(object):
                 OpenRoboFontProject(path)
             except:
                 import traceback
-                print traceback.format_exc(5)
+                print(traceback.format_exc(5))
             fileHandler["opened"] = True
 
 ReadRoboFontProjectFile()
@@ -248,4 +248,3 @@ class RoboFontProjectMenu(object):
         SaveRoboFontProject()
 
 RoboFontProjectMenu()
-
