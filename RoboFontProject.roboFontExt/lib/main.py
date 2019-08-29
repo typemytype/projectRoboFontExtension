@@ -10,7 +10,7 @@ from mojo.UI import OpenGlyphWindow, OpenSpaceCenter, CurrentSpaceCenterWindow, 
 
 from lib.scripting.scriptTools import ScriptRunner
 from lib.scripting.codeEditor import CodeEditor
-from lib.baseObjects import CallbackWrapper
+from mojo.tools import CallbackWrapper
 
 from plistlib import readPlist, writePlist
 
