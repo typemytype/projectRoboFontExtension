@@ -12,12 +12,13 @@ from lib.scripting.scriptTools import ScriptRunner
 from lib.scripting.codeEditor import CodeEditor
 from mojo.tools import CallbackWrapper
 
-from plistlib import readPlist, writePlist
+import plistlib
 
 
 def OpenRoboFontProject(path):
     root = os.path.dirname(path)
-    project = readPlist(path)
+    with open(path, "rb") as plistFile:
+        project = plistlib.load(plistFile)
 
     documentController = NSDocumentController.sharedDocumentController()
     delegate = NSApp().delegate()
@@ -98,7 +99,7 @@ def OpenRoboFontProject(path):
                 # a little bit hacky
                 # will move to mojo.UI in the upcoming releases
                 window = delegate._inspectorWindow.w.getNSWindow()
-            except:
+            except Exception:
                 window = None
             if window is None:
                 delegate.openInspector_(None)
@@ -108,7 +109,7 @@ def OpenRoboFontProject(path):
     if "execute" in project:
         try:
             ScriptRunner(text=project["execute"])
-        except:
+        except Exception:
             import traceback
             print(traceback.format_exc(5))
 
@@ -130,7 +131,8 @@ class SaveRoboFontProject(object):
         if path:
             data = self.getData(path)
 
-            writePlist(data, path)
+            with open(path, "wb") as plistFile:
+                plistlib.dump(data, plistFile)
 
             icon = NSImage.alloc().initByReferencingFile_(os.path.join(os.path.dirname(__file__), "roboFontProjectIcon.png"))
             ws = NSWorkspace.sharedWorkspace()
@@ -155,7 +157,7 @@ class SaveRoboFontProject(object):
 
             for windowController in document.windowControllers():
                 window = windowController.window()
-                (x, y), (w, h) =  window.frame()
+                (x, y), (w, h) = window.frame()
                 data = dict()
                 data["frame"] = x, y, w, h
                 data["windowName"] = window.windowName()
@@ -168,11 +170,11 @@ class SaveRoboFontProject(object):
                     if data["windowName"] == "GlyphWindow":
                         data["glyphName"] = vanillaWrapper.getGlyph().name
                     elif data["windowName"] == "SpaceCenter":
-                            spaceCenter = vanillaWrapper.getSpaceCenter()
-                            data["input"] = spaceCenter.get()
-                            data["pre"] = spaceCenter.getPre()
-                            data["after"] = spaceCenter.getAfter()
-                            data["pointSize"] = spaceCenter.getPointSize()
+                        spaceCenter = vanillaWrapper.getSpaceCenter()
+                        data["input"] = spaceCenter.get()
+                        data["pre"] = spaceCenter.getPre()
+                        data["after"] = spaceCenter.getAfter()
+                        data["pointSize"] = spaceCenter.getPointSize()
 
                 if fileName:
                     documents[fileName].append(data)
@@ -182,7 +184,7 @@ class SaveRoboFontProject(object):
         for window in NSApp().windows():
             if hasattr(window, "windowName"):
                 if window.windowName() in ["DebugWindow", "InspectorWindow"]:
-                    (x, y), (w, h) =  window.frame()
+                    (x, y), (w, h) = window.frame()
                     data = dict()
                     data["frame"] = x, y, w, h
                     data["windowName"] = window.windowName()
@@ -211,7 +213,7 @@ class ReadRoboFontProjectFile(object):
         if ext.lower() == ".robofontproject":
             try:
                 OpenRoboFontProject(path)
-            except:
+            except Exception:
                 import traceback
                 print(traceback.format_exc(5))
             fileHandler["opened"] = True
