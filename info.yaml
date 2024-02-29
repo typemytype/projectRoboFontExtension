@@ -1,0 +1,10 @@
+name: RoboFontProject
+developer: TypeMyType
+developerURL: http://typemytype.com
+launchAtStartUp: true
+mainScript: main.py
+version: '1.2'
+addToMenu: []
+html: false
+requiresVersionMajor: '1'
+requiresVersionMinor: '6'
