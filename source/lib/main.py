@@ -157,29 +157,30 @@ class SaveRoboFontProject(object):
 
             for windowController in document.windowControllers():
                 window = windowController.window()
-                (x, y), (w, h) = window.frame()
-                data = dict()
-                data["frame"] = x, y, w, h
-                data["windowName"] = window.windowName()
+                if hasattr(window, "windowName"):
+                    (x, y), (w, h) = window.frame()
+                    data = dict()
+                    data["frame"] = x, y, w, h
+                    data["windowName"] = window.windowName()
 
-                vanillaWrapper = None
-                if hasattr(window.delegate(), "vanillaWrapper"):
-                    vanillaWrapper = window.delegate().vanillaWrapper()
+                    vanillaWrapper = None
+                    if hasattr(window.delegate(), "vanillaWrapper"):
+                        vanillaWrapper = window.delegate().vanillaWrapper()
 
-                if vanillaWrapper:
-                    if data["windowName"] == "GlyphWindow":
-                        data["glyphName"] = vanillaWrapper.getGlyph().name
-                    elif data["windowName"] == "SpaceCenter":
-                        spaceCenter = vanillaWrapper.getSpaceCenter()
-                        data["input"] = spaceCenter.get()
-                        data["pre"] = spaceCenter.getPre()
-                        data["after"] = spaceCenter.getAfter()
-                        data["pointSize"] = spaceCenter.getPointSize()
+                    if vanillaWrapper:
+                        if data["windowName"] == "GlyphWindow":
+                            data["glyphName"] = vanillaWrapper.getGlyph().name
+                        elif data["windowName"] == "SpaceCenter":
+                            spaceCenter = vanillaWrapper.getSpaceCenter()
+                            data["input"] = spaceCenter.get()
+                            data["pre"] = spaceCenter.getPre()
+                            data["after"] = spaceCenter.getAfter()
+                            data["pointSize"] = spaceCenter.getPointSize()
 
-                if fileName:
-                    documents[fileName].append(data)
-                else:
-                    untitled.append(data)
+                    if fileName:
+                        documents[fileName].append(data)
+                    else:
+                        untitled.append(data)
 
         for window in AppKit.NSApp().windows():
             if hasattr(window, "windowName"):
