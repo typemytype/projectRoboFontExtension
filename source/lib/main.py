@@ -1,4 +1,4 @@
-from AppKit import *
+import AppKit
 
 import os
 
@@ -20,10 +20,10 @@ def OpenRoboFontProject(path):
     with open(path, "rb") as plistFile:
         project = plistlib.load(plistFile)
 
-    documentController = NSDocumentController.sharedDocumentController()
-    delegate = NSApp().delegate()
+    documentController = AppKit.NSDocumentController.sharedDocumentController()
+    delegate = AppKit.NSApp().delegate()
 
-    openFileNames = [window.representedFilename() for window in NSApp().windows()]
+    openFileNames = [window.representedFilename() for window in AppKit.NSApp().windows()]
 
     for fileName, data in project["documents"].items():
 
@@ -54,12 +54,12 @@ def OpenRoboFontProject(path):
                     delegate.newFeature_(None)
 
             else:
-                url = NSURL.fileURLWithPath_(fileName)
+                url = AppKit.NSURL.fileURLWithPath_(fileName)
                 doc, error = documentController.openDocumentWithContentsOfURL_display_error_(url, True, None)
                 if error:
-                    delegate.application_openFile_(NSApp(), fileName)
+                    delegate.application_openFile_(AppKit.NSApp(), fileName)
 
-            window = NSApp().mainWindow()
+            window = AppKit.NSApp().mainWindow()
 
             vanillaWrapper = None
             if hasattr(window.delegate(), "vanillaWrapper"):
@@ -121,7 +121,7 @@ class SaveRoboFontProject(object):
         self.view = vanilla.Group((0, 0, w, h))
         self.view.relative = vanilla.CheckBox((0, 3, 300, 22), "Use Relative Paths")
         self.view.info = vanilla.TextBox((0, 33, 300, 22), "Execute on load:")
-        self.view.editor = CodeEditor((0, 60, w, h-70))
+        self.view.editor = CodeEditor((0, 60, w, h - 70))
 
         view = self.view.getNSView()
         view.setFrame_(((0, 0), (w, h)))
@@ -134,8 +134,8 @@ class SaveRoboFontProject(object):
             with open(path, "wb") as plistFile:
                 plistlib.dump(data, plistFile)
 
-            icon = NSImage.alloc().initByReferencingFile_(os.path.join(os.path.dirname(__file__), "roboFontProjectIcon.png"))
-            ws = NSWorkspace.sharedWorkspace()
+            icon = AppKit.NSImage.alloc().initByReferencingFile_(os.path.join(os.path.dirname(__file__), "roboFontProjectIcon.png"))
+            ws = AppKit.NSWorkspace.sharedWorkspace()
             ws.setIcon_forFile_options_(icon, path, 0)
 
     def getData(self, path):
@@ -145,7 +145,7 @@ class SaveRoboFontProject(object):
 
         relativePaths = self.view.relative.get()
 
-        for document in NSApp().orderedDocuments():
+        for document in AppKit.NSApp().orderedDocuments():
             url = document.fileURL()
             fileName = None
             if url:
@@ -181,7 +181,7 @@ class SaveRoboFontProject(object):
                 else:
                     untitled.append(data)
 
-        for window in NSApp().windows():
+        for window in AppKit.NSApp().windows():
             if hasattr(window, "windowName"):
                 if window.windowName() in ["DebugWindow", "InspectorWindow"]:
                     (x, y), (w, h) = window.frame()
@@ -196,7 +196,6 @@ class SaveRoboFontProject(object):
         if code:
             info["execute"] = code
         return info
-
 
 
 # file handler
@@ -218,6 +217,7 @@ class ReadRoboFontProjectFile(object):
                 print(traceback.format_exc(5))
             fileHandler["opened"] = True
 
+
 ReadRoboFontProjectFile()
 
 
@@ -227,7 +227,7 @@ class RoboFontProjectMenu(object):
 
     def __init__(self):
         title = "Save Project..."
-        mainMenu = NSApp().mainMenu()
+        mainMenu = AppKit.NSApp().mainMenu()
         fileMenu = mainMenu.itemWithTitle_("File")
 
         if not fileMenu:
@@ -241,12 +241,13 @@ class RoboFontProjectMenu(object):
         index = fileMenu.indexOfItemWithTitle_("Revert to Saved")
         self.target = CallbackWrapper(self.callback)
 
-        newItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(title, "action:", "")
+        newItem = AppKit.NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(title, "action:", "")
         newItem.setTarget_(self.target)
 
-        fileMenu.insertItem_atIndex_(newItem, index+1)
+        fileMenu.insertItem_atIndex_(newItem, index + 1)
 
     def callback(self, sender):
         SaveRoboFontProject()
+
 
 RoboFontProjectMenu()
