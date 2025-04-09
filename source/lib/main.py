@@ -185,6 +185,8 @@ class SaveRoboFontProject(object):
         for window in AppKit.NSApp().windows():
             if hasattr(window, "windowName"):
                 if window.windowName() in ["DebugWindow", "InspectorWindow"]:
+                    if window.windowName() == "DebugWindow" and not window.isVisible():
+                        continue
                     (x, y), (w, h) = window.frame()
                     data = dict()
                     data["frame"] = x, y, w, h
